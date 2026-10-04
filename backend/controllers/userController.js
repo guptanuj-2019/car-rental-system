@@ -109,7 +109,7 @@ const forgotPassword = async (req, res) => {
       resetOtpExpire: Date.now() + 5 * 60 * 1000 
     });
 
-    sendOtpAlert(user.email, user.mobile, realOtp);
+    alert(user.email, user.mobile, realOtp);
 
     res.json({ message: `OTP sent successfully to your registered Email and Mobile.` });
   } catch (error) { res.status(500).json({ message: error.message }); }
@@ -146,3 +146,4 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getUsers, deleteUser, updateUserRole, updateUser, forgotPassword, verifyOtp, resetPassword };
+
