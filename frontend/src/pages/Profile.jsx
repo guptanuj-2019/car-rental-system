@@ -39,10 +39,10 @@ const Profile = () => {
       localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
       setUserInfo(updatedUserInfo);
       
-      alert('Profile updated successfully!');
+      // alert('Profile updated successfully!');
       setIsEditing(false);
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to update profile');
+      // alert(error.response?.data?.message || 'Failed to update profile');
     }
   };
 

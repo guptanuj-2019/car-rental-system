@@ -46,7 +46,7 @@ const AdminPanel = ({ userToken }) => {
       setMake(''); setModel(''); setLicensePlate(''); setDailyRate('');
       fetchAdminData();
     } catch (err) {
-      alert('Failed to register car into fleet.');
+      // alert('Failed to register car into fleet.');
     }
   };
 

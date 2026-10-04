@@ -80,7 +80,7 @@ const CustomerPanel = () => {
 
   const handleOpenModal = async (car) => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    if (!userInfo) return alert("Please log in to book a car.");
+    if (!userInfo) return // alert("Please log in to book a car.");
 
     setSelectedCar(car);
     setPaymentMethod('cash');
@@ -150,20 +150,20 @@ const CustomerPanel = () => {
 
   const handleConfirmBooking = async (e) => {
     e.preventDefault();
-    if (dateError) return alert(dateError); 
+    if (dateError) return // alert(dateError); 
     const total = calculateTotal();
 
     if (paymentMethod === 'card') {
-      if (!cardHolderName) return alert("Please enter the Account Holder Name.");
-      if (cardNumber.replace(/\s/g, '').length !== 16) return alert("Valid 16-digit card required.");
-      if (cvv.length !== 3) return alert("Valid 3-digit CVV required.");
-      if (!cardPin || cardPin.length < 4) return alert("Valid 4-digit Card PIN required."); 
-      if (cardMobileNumber.length !== 10) return alert("Please enter a valid 10-digit mobile number.");
-      if (!cardOtp) return alert("Please enter the OTP.");
-    } else if (paymentMethod === 'upi' && !upiId.includes('@')) { return alert("Valid UPI ID required (e.g., name@bank).");
+      if (!cardHolderName) return // alert("Please enter the Account Holder Name.");
+      if (cardNumber.replace(/\s/g, '').length !== 16) return // alert("Valid 16-digit card required.");
+      if (cvv.length !== 3) return // alert("Valid 3-digit CVV required.");
+      if (!cardPin || cardPin.length < 4) return // alert("Valid 4-digit Card PIN required."); 
+      if (cardMobileNumber.length !== 10) return // alert("Please enter a valid 10-digit mobile number.");
+      if (!cardOtp) return // alert("Please enter the OTP.");
+    } else if (paymentMethod === 'upi' && !upiId.includes('@')) { return // alert("Valid UPI ID required (e.g., name@bank).");
     } else if (paymentMethod === 'netbanking') {
-      if (!bank || !accountName || !accountNumber || !mobileNumber || !netBankingPassword || !netBankingOtp) return alert("Please fill in all Net Banking details including OTP.");
-      if (mobileNumber.length !== 10) return alert("Please enter a valid 10-digit mobile number.");
+      if (!bank || !accountName || !accountNumber || !mobileNumber || !netBankingPassword || !netBankingOtp) return // alert("Please fill in all Net Banking details including OTP.");
+      if (mobileNumber.length !== 10) return // alert("Please enter a valid 10-digit mobile number.");
     }
 
     setIsProcessing(true);
@@ -175,11 +175,11 @@ const CustomerPanel = () => {
       });
       await generateReceipt(data._id, total); 
       setSelectedCar(null); 
-    } catch (error) { alert(`Booking failed: ${error.response?.data?.message || error.message}`);
+    } catch (error) { // alert(`Booking failed: ${error.response?.data?.message || error.message}`);
     } finally { setIsProcessing(false); }
   };
 
-  const sendMockOTP = () => { alert("An OTP (123456) has been sent."); };
+  const sendMockOTP = () => { // alert("An OTP (123456) has been sent."); };
 
   const filteredCars = cars.filter(car => {
     const search = carSearch.toLowerCase();

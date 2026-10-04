@@ -28,7 +28,7 @@ const MyBookings = () => {
   const handleCancelBooking = async (id) => {
     if (window.confirm("Cancel this booking? Payment will be refunded.")) {
       try { await API.put(`/bookings/${id}/cancel`); fetchMyBookings(); } 
-      catch (error) { alert("Failed to cancel."); }
+      catch (error) { // alert("Failed to cancel."); }
     }
   };
 
@@ -36,9 +36,9 @@ const MyBookings = () => {
     if (window.confirm("Complete your pending payment via online gateway?")) {
       try {
         await API.put(`/bookings/${id}/pay`);
-        alert("Payment Successful!");
+        // alert("Payment Successful!");
         fetchMyBookings();
-      } catch (error) { alert("Payment failed."); }
+      } catch (error) { // alert("Payment failed."); }
     }
   };
 
@@ -55,10 +55,10 @@ const MyBookings = () => {
         endDate: newEndDate,
         newTotalCost: newTotal
       });
-      alert("Modification requested! Waiting for staff approval.");
+      // alert("Modification requested! Waiting for staff approval.");
       setModifyingBooking(null);
       fetchMyBookings();
-    } catch (error) { alert("Failed to request change."); }
+    } catch (error) { // alert("Failed to request change."); }
   };
 
   const downloadReceipt = (booking) => {

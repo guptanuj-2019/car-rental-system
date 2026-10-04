@@ -57,27 +57,27 @@ const AdminPanel = () => {
     try {
       if (editingCarId) {
         await API.put(`/cars/${editingCarId}`, { make, model, year: Number(year), pricePerDay: Number(pricePerDay) });
-        alert('Vehicle updated successfully!');
+        // alert('Vehicle updated successfully!');
       } else {
         await API.post('/cars', { make, model, year: Number(year), pricePerDay: Number(pricePerDay) });
-        alert('Vehicle added successfully!');
+        // alert('Vehicle added successfully!');
       }
       setMake(''); setModel(''); setYear(''); setPricePerDay(''); setEditingCarId(null); fetchData();
-    } catch (error) { alert(`Error: ${error.response?.data?.message || error.message}`); }
+    } catch (error) { // alert(`Error: ${error.response?.data?.message || error.message}`); }
   };
 
   const handleEditClick = (car) => { setMake(car.make); setModel(car.model); setYear(car.year); setPricePerDay(car.pricePerDay); setEditingCarId(car._id); };
-  const handleDeleteCar = async (id) => { if (window.confirm('Delete this vehicle?')) { try { await API.delete(`/cars/${id}`); fetchData(); } catch (error) { alert('Failed to delete car'); } } };
-  const handleAvailabilityToggle = async (id, currentStatus) => { try { await API.put(`/cars/${id}`, { isAvailable: !currentStatus }); fetchData(); } catch (error) { alert('Failed to update car'); } };
-  const handleStatusUpdate = async (id, newStatus) => { try { await API.put(`/bookings/${id}/status`, { status: newStatus }); fetchData(); } catch (error) { alert('Failed to update status'); } };
-  const handleDeleteUser = async (id) => { if (window.confirm('Delete this user?')) { try { await API.delete(`/users/${id}`); fetchData(); } catch (error) { alert('Failed to delete user'); } } };
+  const handleDeleteCar = async (id) => { if (window.confirm('Delete this vehicle?')) { try { await API.delete(`/cars/${id}`); fetchData(); } catch (error) { // alert('Failed to delete car'); } } };
+  const handleAvailabilityToggle = async (id, currentStatus) => { try { await API.put(`/cars/${id}`, { isAvailable: !currentStatus }); fetchData(); } catch (error) { // alert('Failed to update car'); } };
+  const handleStatusUpdate = async (id, newStatus) => { try { await API.put(`/bookings/${id}/status`, { status: newStatus }); fetchData(); } catch (error) { // alert('Failed to update status'); } };
+  const handleDeleteUser = async (id) => { if (window.confirm('Delete this user?')) { try { await API.delete(`/users/${id}`); fetchData(); } catch (error) { // alert('Failed to delete user'); } } };
 
   const handleUserUpdate = async (e) => {
     e.preventDefault();
     try {
       await API.put(`/users/${editingUser._id}`, { username: editingUser.username, email: editingUser.email, mobile: editingUser.mobile, role: editingUser.role });
-      alert('User details updated successfully!'); setEditingUser(null); fetchData(); 
-    } catch (error) { alert(`Failed to update user: ${error.response?.data?.message || error.message}`); }
+      // alert('User details updated successfully!'); setEditingUser(null); fetchData(); 
+    } catch (error) { // alert(`Failed to update user: ${error.response?.data?.message || error.message}`); }
   };
 
   const revenueBookings = bookings.filter(b => b.paymentStatus === 'Paid' && !['Cancelled', 'Rejected'].includes(b.status));

@@ -15,24 +15,24 @@ const Register = () => {
     e.preventDefault();
     
     if (!email.includes('@')) {
-      return alert("Invalid Email: Must contain an '@' symbol.");
+      return // alert("Invalid Email: Must contain an '@' symbol.");
     }
     if (mobile.length !== 10 || isNaN(mobile)) {
-      return alert("Invalid Mobile: Must be exactly 10 digits.");
+      return // alert("Invalid Mobile: Must be exactly 10 digits.");
     }
 
     try {
       const { data } = await API.post('/users/register', { name, username, mobile, email, password, role });
       
       localStorage.setItem('userInfo', JSON.stringify(data));
-      alert(`Successfully registered as ${data.role}!`);
+      // alert(`Successfully registered as ${data.role}!`);
       
       if (data.role === 'Admin') navigate('/admin');
       else if (data.role === 'Rental Staff') navigate('/staff');
       else navigate('/');
       
     } catch (error) {
-      alert(error.response?.data?.message || 'Registration Failed');
+      // alert(error.response?.data?.message || 'Registration Failed');
     }
   };
 

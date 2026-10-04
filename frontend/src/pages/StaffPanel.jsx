@@ -22,7 +22,7 @@ const StaffPanel = () => {
     try {
       const bookingsRes = await API.get('/bookings'); setBookings(bookingsRes.data.reverse()); 
       const carsRes = await API.get('/cars/all'); setCars(carsRes.data.reverse());
-    } catch (error) { alert('Backend Error: ' + (error.response?.data?.message || error.message)); }
+    } catch (error) { // alert('Backend Error: ' + (error.response?.data?.message || error.message)); }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -31,8 +31,8 @@ const StaffPanel = () => {
     setPages(prev => ({ ...prev, [tab]: newPage }));
   };
 
-  const handleStatusUpdate = async (id, newStatus) => { try { await API.put(`/bookings/${id}/status`, { status: newStatus }); fetchData(); } catch (error) { alert('Failed to update status'); } };
-  const handleAvailabilityToggle = async (id, currentStatus) => { try { await API.put(`/cars/${id}`, { isAvailable: !currentStatus }); fetchData(); } catch (error) { alert('Failed to update car availability'); } };
+  const handleStatusUpdate = async (id, newStatus) => { try { await API.put(`/bookings/${id}/status`, { status: newStatus }); fetchData(); } catch (error) { // alert('Failed to update status'); } };
+  const handleAvailabilityToggle = async (id, currentStatus) => { try { await API.put(`/cars/${id}`, { isAvailable: !currentStatus }); fetchData(); } catch (error) { // alert('Failed to update car availability'); } };
 
   const getStatusBadge = (status) => {
     const base = "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border inline-block min-w-[100px] text-center ";

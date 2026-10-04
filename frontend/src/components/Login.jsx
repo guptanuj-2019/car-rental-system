@@ -41,7 +41,7 @@ const Login = () => {
         setResetStep(1);
         setShowModal(true);
       } else {
-        window.alert(error.response?.data?.message || 'Login Failed');
+        // // alert(error.response?.data?.message || 'Login Failed');
       }
     }
   };
@@ -82,7 +82,7 @@ const Login = () => {
         otp, 
         newPassword 
       });
-      window.alert(data.message || 'Password updated successfully!');
+      // // alert(data.message || 'Password updated successfully!');
       setShowModal(false);
       setIdentifier(resetIdentifier);
       setPassword(newPassword); 
