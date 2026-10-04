@@ -155,7 +155,7 @@ const Login = () => {
               <h2 className="text-2xl font-extrabold text-gray-800 mb-2">Reset Password</h2>
               
               <p className={`text-sm mb-6 font-medium ${
-                resetMessage.includes('Failed') || resetMessage.includes('Invalid') || resetMessage.includes('not match')
+                resetMessage.includes('Failed') || resetMessage.includes('Invalid') || resetMessage.includes('not match') || resetMessage.includes('not configured') || resetMessage.includes('delivery failed')
                   ? 'text-red-600'
                   : 'text-gray-600'
               }`}>
@@ -234,6 +234,7 @@ const Login = () => {
                   <input 
                     type="password" 
                     placeholder="Enter New Password" 
+                    minLength="8"
                     value={newPassword} 
                     onChange={(e) => setNewPassword(e.target.value)} 
                     className="w-full p-3 border rounded outline-none focus:border-blue-500" 
@@ -242,6 +243,7 @@ const Login = () => {
                   <input 
                     type="password" 
                     placeholder="Confirm New Password" 
+                    minLength="8"
                     value={confirmPassword} 
                     onChange={(e) => setConfirmPassword(e.target.value)} 
                     className="w-full p-3 border rounded outline-none focus:border-blue-500" 

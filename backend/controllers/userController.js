@@ -1,9 +1,21 @@
 const jwt = require('jsonwebtoken');
+const { randomInt } = require('crypto');
 const User = require('../models/User');
-const { sendRegistrationAlert, alert } = require('../utils/sendNotifications');
+const sendNotifications = require('../utils/sendNotifications');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+};
+
+const findUserByIdentifier = (value) => {
+  const identifier = typeof value === 'string' ? value.trim() : '';
+  const lookup = [{ email: identifier }, { username: identifier }];
+  if (/^[+\d\s()-]+$/.test(identifier)) {
+    const digits = identifier.replace(/\D/g, '');
+    const mobile = digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits;
+    if (/^\d{10}$/.test(mobile)) lookup.push({ mobile });
+  }
+  return User.findOne({ $or: lookup });
 };
 
 const registerUser = async (req, res) => {
@@ -14,7 +26,6 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({ name, username, mobile, email, password, role });
     if (user) {
-      sendRegistrationwindow.alert(user); 
       res.status(201).json({
         _id: user._id, name: user.name, username: user.username, email: user.email, mobile: user.mobile, role: user.role, createdAt: user.createdAt,
         token: generateToken(user._id), 
@@ -97,31 +108,54 @@ const updateUser = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { identifier } = req.body;
+  const identifier = typeof req.body.identifier === 'string' ? req.body.identifier.trim() : '';
+  if (!identifier) return res.status(400).json({ message: 'Enter your registered email or mobile number.' });
+
   try {
-    const user = await User.findOne({ $or: [{ email: identifier }, { mobile: identifier }, { username: identifier }] });
+    const user = await findUserByIdentifier(identifier);
     if (!user) return res.status(404).json({ message: "User not found." });
 
-    const realOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    await User.findByIdAndUpdate(user._id, {
-      resetOtp: realOtp,
-      resetOtpExpire: Date.now() + 5 * 60 * 1000 
-    });
+    const realOtp = randomInt(100000, 1000000).toString();
+    const isEmail = identifier.toLowerCase() === user.email.toLowerCase();
+    const isPhoneIdentifier = /^[+\d\s()-]+$/.test(identifier);
+    const digits = isPhoneIdentifier ? identifier.replace(/\D/g, '') : '';
+    const mobileIdentifier = digits.length === 12 && digits.startsWith('91') ? digits.slice(2) : digits;
+    const isMobile = isPhoneIdentifier && mobileIdentifier === user.mobile;
+    const email = isMobile && !isEmail ? undefined : user.email;
+    const phone = isMobile && !isEmail ? user.mobile : undefined;
 
-    window.alert(user.email, user.mobile, realOtp);
+    user.resetOtp = realOtp;
+    user.resetOtpExpire = new Date(Date.now() + 5 * 60 * 1000);
+    await user.save();
 
-    res.json({ message: `OTP sent successfully to your registered Email and Mobile.` });
-  } catch (error) { res.status(500).json({ message: error.message }); }
+    try {
+      const channel = await sendNotifications({ email, phone, otp: realOtp });
+      return res.json({ message: `OTP sent successfully to your registered ${channel === 'email' ? 'email' : 'mobile number'}.` });
+    } catch (error) {
+      user.resetOtp = undefined;
+      user.resetOtpExpire = undefined;
+      await user.save();
+      console.error('Password reset OTP delivery failed:', error.message);
+      const statusCode = error.code === 'NOTIFICATION_CONFIG' ? 503 : 502;
+      return res.status(statusCode).json({
+        message: error.code === 'NOTIFICATION_CONFIG'
+          ? error.message
+          : 'OTP delivery failed. Check the configured email or SMS provider and try again.',
+      });
+    }
+  } catch (error) {
+    console.error('Password reset request failed:', error.message);
+    return res.status(500).json({ message: 'Unable to process the password reset request.' });
+  }
 };
 
 const verifyOtp = async (req, res) => {
   const { identifier, otp } = req.body;
   try {
-    const user = await User.findOne({ $or: [{ email: identifier }, { mobile: identifier }, { username: identifier }] });
+    const user = await findUserByIdentifier(identifier);
     if (!user) return res.status(404).json({ message: "User not found." });
-    if (user.resetOtp !== otp) return res.status(400).json({ message: "Invalid OTP." });
-    if (user.resetOtpExpire < Date.now()) return res.status(400).json({ message: "OTP has expired." });
+    if (!/^\d{6}$/.test(String(otp || '')) || user.resetOtp !== otp) return res.status(400).json({ message: "Invalid OTP." });
+    if (!user.resetOtpExpire || user.resetOtpExpire.getTime() <= Date.now()) return res.status(400).json({ message: "OTP has expired." });
 
     res.json({ message: "OTP Verified Successfully!" });
   } catch (error) { res.status(500).json({ message: error.message }); }
@@ -130,10 +164,13 @@ const verifyOtp = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { identifier, otp, newPassword } = req.body;
   try {
-    const user = await User.findOne({ $or: [{ email: identifier }, { mobile: identifier }, { username: identifier }] });
+    const user = await findUserByIdentifier(identifier);
     if (!user) return res.status(404).json({ message: "User not found." });
-    if (user.resetOtp !== otp) return res.status(400).json({ message: "Invalid OTP." });
-    if (user.resetOtpExpire < Date.now()) return res.status(400).json({ message: "OTP has expired." });
+    if (!/^\d{6}$/.test(String(otp || '')) || user.resetOtp !== otp) return res.status(400).json({ message: "Invalid OTP." });
+    if (!user.resetOtpExpire || user.resetOtpExpire.getTime() <= Date.now()) return res.status(400).json({ message: "OTP has expired." });
+    if (typeof newPassword !== 'string' || newPassword.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    }
 
     user.password = newPassword;
     user.lastPasswordChange = Date.now();
@@ -146,6 +183,3 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getUsers, deleteUser, updateUserRole, updateUser, forgotPassword, verifyOtp, resetPassword };
-
-
-

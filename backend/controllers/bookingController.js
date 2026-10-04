@@ -1,6 +1,4 @@
 const Booking = require('../models/Booking');
-const Car = require('../models/Car'); 
-const { sendBookingAlert, sendPaymentAlert } = require('../utils/sendNotifications'); 
 
 const getCarBookings = async (req, res) => {
   try {
@@ -17,9 +15,6 @@ const createBooking = async (req, res) => {
     if (conflictingBookings.length > 0) return res.status(400).json({ message: 'Dates unavailable.' });
 
     const booking = await Booking.create({ user: ((req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user)))._id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user))).id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user))))._id, car: carId, startDate, endDate, totalCost, paymentMethod: paymentMethod || 'card', paymentStatus: paymentStatus || 'Paid' });
-    const car = await Car.findById(carId);
-    sendBookingwindow.alert(((req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user)))._id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user))).id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user)))), car, booking);
-    if (booking.paymentStatus === 'Paid') sendPaymentwindow.alert(((req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user)))._id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user))).id || (req.user._id || req.user.id || (req.user._id || req.user.id || (req.user._id || req.user.id || req.user)))), car, booking);
     res.status(201).json(booking);
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
@@ -79,7 +74,6 @@ const updatePayment = async (req, res) => {
 
     booking.paymentStatus = 'Paid';
     await booking.save();
-    sendPaymentwindow.alert(booking.user, booking.car, booking);
     res.json(booking);
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
@@ -119,4 +113,3 @@ const rejectModification = async (req, res) => {
 };
 
 module.exports = { getCarBookings, createBooking, getMyBookings, updateBookingStatus, getAllBookings, cancelBooking, updatePayment, requestModification, approveModification, rejectModification };
-

@@ -19,7 +19,7 @@ const MyBookings = () => {
     try {
       const { data } = await API.get('/bookings/mybookings');
       setMyBookings(data.reverse()); 
-    } catch (error) { console.error('Failed to fetch history'); } 
+    } catch (error) { console.error('Failed to fetch history:', error); }
     finally { setLoading(false); }
   };
 
@@ -28,7 +28,7 @@ const MyBookings = () => {
   const handleCancelBooking = async (id) => {
     if (window.confirm("Cancel this booking? Payment will be refunded.")) {
       try { await API.put(`/bookings/${id}/cancel`); fetchMyBookings(); } 
-      catch (error) { // alert("Failed to cancel."); }
+      catch (error) { console.error('Failed to cancel booking:', error); }
     }
   };
 
@@ -38,7 +38,7 @@ const MyBookings = () => {
         await API.put(`/bookings/${id}/pay`);
         // alert("Payment Successful!");
         fetchMyBookings();
-      } catch (error) { // alert("Payment failed."); }
+      } catch (error) { console.error('Failed to complete payment:', error); }
     }
   };
 
@@ -58,7 +58,7 @@ const MyBookings = () => {
       // alert("Modification requested! Waiting for staff approval.");
       setModifyingBooking(null);
       fetchMyBookings();
-    } catch (error) { // alert("Failed to request change."); }
+    } catch (error) { console.error('Failed to request booking modification:', error); }
   };
 
   const downloadReceipt = (booking) => {

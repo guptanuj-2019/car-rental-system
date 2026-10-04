@@ -125,7 +125,7 @@ import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import CustomerPanel from './pages/CustomerPanel';
-import Login from './pages/Login';
+import Login from './components/Login';
 import Register from './pages/Register';
 import StaffPanel from './pages/StaffPanel';
 import AdminPanel from './pages/AdminPanel';

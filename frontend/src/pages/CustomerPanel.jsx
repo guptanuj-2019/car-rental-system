@@ -44,7 +44,7 @@ const CustomerPanel = () => {
       try {
         const { data } = await API.get('/cars');
         setCars(data);
-      } catch (err) { console.error('Failed to fetch cars'); }
+      } catch (err) { console.error('Failed to fetch cars:', err); }
     };
     fetchCars();
   }, []);
@@ -97,7 +97,7 @@ const CustomerPanel = () => {
     try {
       const { data } = await API.get(`/bookings/car/${car._id}`);
       setBookedDates(data);
-    } catch (err) { console.error("Could not fetch booked dates"); }
+    } catch (err) { console.error('Could not fetch booked dates:', err); }
   };
 
   const calculateTotal = () => {
@@ -175,11 +175,11 @@ const CustomerPanel = () => {
       });
       await generateReceipt(data._id, total); 
       setSelectedCar(null); 
-    } catch (error) { // alert(`Booking failed: ${error.response?.data?.message || error.message}`);
-    } finally { setIsProcessing(false); }
+    } catch (error) { console.error('Booking failed:', error); }
+    finally { setIsProcessing(false); }
   };
 
-  const sendMockOTP = () => { // alert("An OTP (123456) has been sent."); };
+  const sendMockOTP = () => { console.info('Mock payment OTP sent.'); };
 
   const filteredCars = cars.filter(car => {
     const search = carSearch.toLowerCase();
