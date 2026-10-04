@@ -41,7 +41,8 @@ const Login = () => {
         setResetStep(1);
         setShowModal(true);
       } else {
-        setResetMessage(error.response?.data?.message || 'Login Failed');
+        const msg = error.response?.data?.message || 'Login Failed';
+        setResetMessage(msg);
       }
     }
   };
@@ -54,7 +55,8 @@ const Login = () => {
       setTimeLeft(60);
       setResetStep(2);
     } catch (error) {
-      setResetMessage(error.response?.data?.message || 'Failed to send OTP.');
+      const msg = error.response?.data?.message || 'Failed to send OTP.';
+      setResetMessage(msg);
     }
   };
 
@@ -65,7 +67,8 @@ const Login = () => {
       setResetMessage("OTP Verified! Securely enter your new password.");
       setResetStep(3);
     } catch (error) {
-      setResetMessage(error.response?.data?.message || 'Invalid or Expired OTP.');
+      const msg = error.response?.data?.message || 'Invalid or Expired OTP.';
+      setResetMessage(msg);
     }
   };
 
@@ -89,7 +92,8 @@ const Login = () => {
         setPassword(newPassword);
       }, 1500);
     } catch (error) {
-      setResetMessage(error.response?.data?.message || 'Failed to reset password.');
+      const msg = error.response?.data?.message || 'Failed to reset password.';
+      setResetMessage(msg);
     }
   };
 
