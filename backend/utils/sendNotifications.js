@@ -22,13 +22,13 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
   if (email) {
     try {
       await transporter.sendMail({
-        from: "Car Rental System" <>,
+        from: process.env.EMAIL_USER,
         to: email,
         subject: 'Password Reset OTP - Car Rental System',
-        text: message || Your OTP for password reset is: ,
-        html: <p>Your OTP for password reset is: <b></b></p>,
+        text: message || `Your OTP for password reset is: ${otp}`,
+        html: `<p>Your OTP for password reset is: <b>${otp}</b></p>`,
       });
-      console.log(Email sent successfully to );
+      console.log(`Email sent successfully to ${email}`);
     } catch (emailErr) {
       console.error('Email sending error:', emailErr.message);
     }
@@ -38,11 +38,11 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
   if (twilioClient && process.env.TWILIO_PHONE_NUMBER && phone) {
     try {
       await twilioClient.messages.create({
-        body: message || Your OTP for password reset is: ,
+        body: message || `Your OTP for password reset is: ${otp}`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phone,
       });
-      console.log(SMS sent successfully to );
+      console.log(`SMS sent successfully to ${phone}`);
     } catch (smsErr) {
       console.warn('SMS skipped or failed (non-critical):', smsErr.message);
     }
