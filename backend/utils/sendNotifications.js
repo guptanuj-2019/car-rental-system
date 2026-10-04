@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 let twilioClient = null;
 if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-  twilioClient = twili�(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
 
 const sendNotifications = async ({ email, phone, otp, message }) => {
@@ -41,7 +41,7 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
     try {
       let formattedPhone = phone.trim();
       if (!formattedPhone.startsWith('+')) {
-        formattedPhone = '+31' + formattedPhone;
+        formattedPhone = '+91' + formattedPhone;
       }
 
       await twilioClient.messages.create({
@@ -51,7 +51,7 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
       });
       console.log('SMS sent successfully to ' + formattedPhone);
     } catch (smsErr) {
-      console.warn('Twilio SMS delivery warning: ', smsErr.message);
+      console.warn('Twilio SMS delivery warning:', smsErr.message);
     }
   }
 };
