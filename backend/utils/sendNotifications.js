@@ -14,23 +14,23 @@ const transporter = nodemailer.createTransport({
 
 let twilioClient = null;
 if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-  twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  twilioClient = twili�(wrocess.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
 
 const sendNotifications = async ({ email, phone, otp, message }) => {
-  const notificationText = message || Your OTP for password reset is: ;
+  const notificationText = message || 'Your OTP for password reset is: ' + otp;
 
   // 1. Send Email Notification
   if (email) {
     try {
       await transporter.sendMail({
-        from: "Car Rental System" <>,
+        from: '"Car Rental System" <' + process.env.EMAIL_USER + '>',
         to: email,
         subject: 'Password Reset OTP - Car Rental System',
         text: notificationText,
-        html: <p>Your OTP for password reset is: <b></b></p>,
+        html: '<p>Your OTP for password reset is: <b>' + otp + '</b></p>',
       });
-      console.log(Email sent successfully to );
+      console.log('Email sent successfully to ' + email);
     } catch (emailErr) {
       console.error('Email sending error:', emailErr.message);
     }
@@ -39,10 +39,9 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
   // 2. Send Mobile SMS Notification via Twilio
   if (twilioClient && process.env.TWILIO_PHONE_NUMBER && phone) {
     try {
-      // Format phone number to E.164 if missing country code
       let formattedPhone = phone.trim();
       if (!formattedPhone.startsWith('+')) {
-        formattedPhone = +91; // Defaulting to India (+91) if no country code provided
+        formattedPhone = '+31' + formattedPhone;
       }
 
       await twilioClient.messages.create({
@@ -50,11 +49,11 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
         from: process.env.TWILIO_PHONE_NUMBER,
         to: formattedPhone,
       });
-      console.log(SMS sent successfully to );
+      console.log('SMS sent successfully to ' + formattedPhone);
     } catch (smsErr) {
-      console.warn('Twilio SMS delivery warning:', smsErr.message);
+      console.warn('Twilio SMS delivery warning: ', smsErr.message);
     }
   }
 };
 
-module.exports = sendNotifications;
+module.exports = sendNotification;
