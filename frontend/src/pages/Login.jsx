@@ -8,7 +8,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
-  const [resetStep, setResetStep] = useState(1); 
+  const [resetStep, setResetStep] = useState(1);
   const [resetIdentifier, setResetIdentifier] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -41,7 +41,7 @@ const Login = () => {
         setResetStep(1);
         setShowModal(true);
       } else {
-        alert(error.response?.data?.message || 'Login Failed');
+        window.alert(error.response?.data?.message || 'Login Failed');
       }
     }
   };
@@ -50,12 +50,11 @@ const Login = () => {
     e?.preventDefault();
     try {
       const { data } = await API.post('/users/forgot-password', { identifier: resetIdentifier });
-      alert(data.message); 
-      setResetMessage("Please enter the OTP sent to your device. (Valid for 5 mins)");
-      setTimeLeft(60); 
+      setResetMessage(data.message || "OTP sent successfully! Valid for 5 mins.");
+      setTimeLeft(60);
       setResetStep(2);
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to send OTP.');
+      setResetMessage(error.response?.data?.message || 'Failed to send OTP.');
     }
   };
 
@@ -66,14 +65,15 @@ const Login = () => {
       setResetMessage("OTP Verified! Securely enter your new password.");
       setResetStep(3);
     } catch (error) {
-      alert(error.response?.data?.message || 'Invalid or Expired OTP.');
+      setResetMessage(error.response?.data?.message || 'Invalid or Expired OTP.');
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      return alert("Passwords do not match! Please check again.");
+      setResetMessage("Passwords do not match! Please check again.");
+      return;
     }
 
     try {
@@ -82,12 +82,12 @@ const Login = () => {
         otp, 
         newPassword 
       });
-      alert(data.message);
+      window.alert(data.message || 'Password updated successfully!');
       setShowModal(false);
       setIdentifier(resetIdentifier);
       setPassword(newPassword); 
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to reset password.');
+      setResetMessage(error.response?.data?.message || 'Failed to reset password.');
     }
   };
 
@@ -131,9 +131,9 @@ const Login = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-8 max-w-sm w-full shadow-2xl relative">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 font-bold text-xl">✕</button>
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 font-bold text-xl">?</button>
             <h2 className="text-2xl font-extrabold text-gray-800 mb-2">Reset Password</h2>
-            <p className={`text-sm mb-6 font-medium ${resetMessage.includes('Expired') || resetMessage.includes('match') ? 'text-red-600' : 'text-gray-600'}`}>{resetMessage}</p>
+            <p className={	ext-sm mb-6 font-medium }>{resetMessage}</p>
 
             {resetStep === 1 && (
               <form onSubmit={handleRequestOTP} className="space-y-4">
@@ -192,3 +192,4 @@ const Login = () => {
 };
 
 export default Login;
+
