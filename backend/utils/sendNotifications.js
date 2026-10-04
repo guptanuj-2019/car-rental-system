@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 let twilioClient = null;
 if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-  twilioClient = twili�(wrocess.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  twilioClient = twili�(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 }
 
 const sendNotifications = async ({ email, phone, otp, message }) => {
@@ -56,4 +56,4 @@ const sendNotifications = async ({ email, phone, otp, message }) => {
   }
 };
 
-module.exports = sendNotification;
+module.exports = sendNotifications;
