@@ -14,7 +14,7 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({ name, username, mobile, email, password, role });
     if (user) {
-      sendRegistrationAlert(user); 
+      sendRegistrationwindow.alert(user); 
       res.status(201).json({
         _id: user._id, name: user.name, username: user.username, email: user.email, mobile: user.mobile, role: user.role, createdAt: user.createdAt,
         token: generateToken(user._id), 
@@ -109,7 +109,7 @@ const forgotPassword = async (req, res) => {
       resetOtpExpire: Date.now() + 5 * 60 * 1000 
     });
 
-    alert(user.email, user.mobile, realOtp);
+    window.alert(user.email, user.mobile, realOtp);
 
     res.json({ message: `OTP sent successfully to your registered Email and Mobile.` });
   } catch (error) { res.status(500).json({ message: error.message }); }
@@ -146,5 +146,6 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getUsers, deleteUser, updateUserRole, updateUser, forgotPassword, verifyOtp, resetPassword };
+
 
 
