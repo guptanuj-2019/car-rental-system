@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { sendRegistrationAlert, sendOtpAlert } = require('../utils/sendNotifications');
+const { sendRegistrationAlert, alert } = require('../utils/sendNotifications');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -146,4 +146,5 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getUsers, deleteUser, updateUserRole, updateUser, forgotPassword, verifyOtp, resetPassword };
+
 
